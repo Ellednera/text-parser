@@ -13,8 +13,6 @@ void readText(void);
 // verbosity is not done yet
 char** parseText(const char* text, bool verbose = true);
 
-void processSubText(int i, int* next_space_index, bool verbose = true);
+char* processSubText(int i, int* next_space_index, bool verbose = true);
 
 int getTotalWords(const char* text);
-
-char** splitText(const char* text);

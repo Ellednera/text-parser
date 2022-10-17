@@ -3,7 +3,6 @@
 #define MAX_TEXT_LENGTH 50
 
 char text[MAX_TEXT_LENGTH] = "";
-char* sub_strings[] = { NULL };
 
 void runEngine(void) {
 	readText();
@@ -21,8 +20,12 @@ char** parseText(const char* text, bool verbose) {
 	cout << "Text to parse: " << text << endl;
 
 	int next_space_index = 0;
+
+	printf("total words=%d\n", getTotalWords(text));
+
 	for (int i = 0; i <= MAX_TEXT_LENGTH; i++) {
 		//printf("%c", text[i]); // output for debugging
+
 		if (text[i] == '\0') {
 
 			processSubText(i, &next_space_index);
@@ -38,18 +41,14 @@ char** parseText(const char* text, bool verbose) {
 			processSubText(i, &next_space_index);
 
 		}
-		else {
-			// remove after debugging is done
-			//printf("%c\n", text[i]);
-		}
 
 	}
 
 	return NULL;
 }
 
-void processSubText(int end_of_subtext, int* next_space_index, bool verbose) {
-	//split text, actually just access the chars, strcat + strcpy_s into sub_strings
+char* processSubText(int end_of_subtext, int* next_space_index, bool verbose) {
+	
 	char* sub_text = (char*)malloc(end_of_subtext - *next_space_index + 1);
 	for (int letter = 0; letter < end_of_subtext - *next_space_index; letter++) {
 		*(sub_text + letter) = text[*next_space_index + letter];
@@ -57,7 +56,28 @@ void processSubText(int end_of_subtext, int* next_space_index, bool verbose) {
 	*(sub_text + (end_of_subtext - *next_space_index)) = '\0';
 
 	printf("Subtext: %s\n", sub_text);
-	free(sub_text);
+	
+	return sub_text;
+	
+	//free(sub_text);
 
-	*next_space_index = end_of_subtext; // to get to next word, don't +1 !
+
+	*next_space_index = end_of_subtext + 1; // +1 will get rid of the space
+}
+
+int getTotalWords(const char* text) {
+	int totalSpaces = 0;
+
+	for (int i = 0; i < MAX_TEXT_LENGTH; i++) {
+		if ( text[i] != '\0') {
+			if (text[i] == ' ') {
+				totalSpaces++;
+			}
+		}
+		else {
+			return (totalSpaces + 1);
+		}
+	}
+
+	return (totalSpaces + 1);
 }

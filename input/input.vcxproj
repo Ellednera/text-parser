@@ -24,6 +24,7 @@
     <ProjectGuid>{ed4e10b1-c68e-4a9b-b811-c84181072d23}</ProjectGuid>
     <RootNamespace>input</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>text-parser</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
