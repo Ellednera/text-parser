@@ -72,6 +72,7 @@ int main() {
 	*/
 	
 	runEngine();
+	char** parsedCommands = getFinalizedCommands();
 
 	//char* text = (char*) malloc( 5 + 1 );
 	//for (int i = 0; i < 5; i++) {
@@ -80,6 +81,18 @@ int main() {
 	//text[4] = '\0';
 	
 	//printf("Text: %s", text);
+
+	/*
+	// https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/
+	int maxWordLength = 15;
+	// do checking for individual split word, if > maxWordLength => command not supported
+	char** split_texts = (char**)malloc( sizeof(char*) );
+	split_texts[0] = (char*)malloc( maxWordLength * sizeof(char*) + 1 );
+	strcpy_s(split_texts[0], maxWordLength+1, "hello");
+
+	printf( "%s\n", split_texts[0]);
+	*/
+	
 
 	return 0;
 }
