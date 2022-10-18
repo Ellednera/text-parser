@@ -1,34 +1,40 @@
 #include "TextParser.h"
 
 #define MAX_TEXT_LENGTH 50
+#define MAX_WORD_LENGTH 15
 
 char text[MAX_TEXT_LENGTH] = "";
 char** split_texts = (char**)malloc(sizeof(char*));
+const char* prompt = NULL;
+bool verbosity = false;
 
-void runEngine(void) {
-	readText();
+void runEngine(const char* prompt, bool verbose) {
+	verbosity = verbose;
+	readText(prompt);
 }
 
-void readText(void) {
+void readText(const char* prompt) {
 
-	printf("Type something: ");
+	printf("%s", prompt);
 	gets_s(text);
 
 	parseText(text);
 }
 
 char** getFinalizedCommands(void) {
-	return split_texts;
+	return split_texts; // a copy only
 }
 
-char** parseText(const char* text, bool verbose) {
-	cout << "Text to parse: " << text << endl;
+char** parseText(const char* text) {
+	if (verbosity)
+		cout << "Text to parse: " << text << endl;
 
 	int next_space_index = 0;
 	int total_words = getTotalWords(text);
 	int total_sub_text_to_register = 0; // used as index for regiterSubCommands()
-	printf("total words=%d\n", total_words);
 
+	if (verbosity)
+		printf("total words=%d\n", total_words);
 
 	for (int i = 0; i <= MAX_TEXT_LENGTH; i++) {
 		//printf("%c", text[i]); // output for debugging
@@ -41,12 +47,14 @@ char** parseText(const char* text, bool verbose) {
 			// add a dummy value at the end of array
 			finalizeSubCommands(split_texts, total_sub_text_to_register++);
 
-			if ( split_texts[total_sub_text_to_register-1] == NULL) {
-				printf("Last item of finalized commands is NULL\n");
-			}
+			if (verbosity) {
+				if (split_texts[total_sub_text_to_register - 1] == NULL) {
+					printf("Last item of finalized commands is NULL\n");
+				}
 
-			printf("Only used %d/%d chars\n", i, MAX_TEXT_LENGTH);
-			printf("Highest index of last char: %d\n", i - 1);
+				printf("Only used %d/%d chars\n", i, MAX_TEXT_LENGTH);
+				printf("Highest index of last char: %d\n", i - 1);
+			}
 
 			// input consists '\0', stop the remaining (MAX_TEXT_LENGTH - next_space_index) being parsed
 			//break; 
@@ -54,18 +62,14 @@ char** parseText(const char* text, bool verbose) {
 			
 		}
 		else if (text[i] == ' ') {
-			
 			char* sub_text = processSubText(i, &next_space_index);
 			registerSubCommands(sub_text, split_texts, total_sub_text_to_register++);
 		}
 
 	}
-
-	// get array of commands and return it
-	return NULL; // to be done in if statement
 }
 
-char* processSubText(int end_of_subtext, int* next_space_index, bool verbose) {
+char* processSubText(int end_of_subtext, int* next_space_index) {
 	
 	char* sub_text = (char*)malloc(end_of_subtext - *next_space_index + 1);
 	for (int letter = 0; letter < end_of_subtext - *next_space_index; letter++) {
@@ -73,7 +77,8 @@ char* processSubText(int end_of_subtext, int* next_space_index, bool verbose) {
 	}
 	*(sub_text + (end_of_subtext - *next_space_index)) = '\0';
 
-	printf("Subtext: %s\n", sub_text);
+	if (verbosity)
+		printf("Subtext: %s\n", sub_text);
 	
 	*next_space_index = end_of_subtext + 1; // +1 will get rid of the space
 
@@ -97,15 +102,23 @@ int getTotalWords(const char* text) {
 	return (totalSpaces + 1);
 }
 
-void registerSubCommands(const char* sub_text, char** split_texts, int index, bool verbose) {
-	printf("registering command #%d...", index);
+void registerSubCommands(const char* sub_text, char** split_texts, int index) {
+	if (verbosity)
+		printf("registering command #%d...", index);
+	
 	split_texts[index] = (char*)malloc(MAX_WORD_LENGTH * sizeof(char*) + 1);
 	strcpy_s(split_texts[index], MAX_WORD_LENGTH + 1, sub_text);
-	printf("Done!\n\n");
+
+	if (verbosity)
+		printf("Done!\n\n");
 }
 
-void finalizeSubCommands(char** split_texts, int index, bool verbose) {
-	printf("finalizing...adding NULL at #%d...", index);
+void finalizeSubCommands(char** split_texts, int index) {
+	if (verbosity)
+		printf("finalizing...adding NULL at #%d...", index);
+
 	split_texts[index] = NULL;
-	printf("Done!\n\n");
+	
+	if (verbosity)
+		printf("Done!\n\n");
 }
